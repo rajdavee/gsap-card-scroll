@@ -1,0 +1,299 @@
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: #000;
+    color: #fff;
+    overflow-x: hidden;
+  }
+
+  .container {
+    position: relative;
+    min-height: 100vh; /* changed from 400vh to min-height: 100vh */
+  }
+
+  .wrapper-section {
+    height: 100vh;
+    width: 100%;
+    background-color: #000;
+  }
+
+  .center-line {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #fff;
+    z-index: 1;
+    opacity: 0; /* Start hidden */
+  }
+
+  .image-section {
+    height: 100vh;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .image-wrapper {
+    position: relative; /* changed from fixed to relative */
+    width: 80vw;
+    height: 80vh;
+    margin: 0 auto;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .text-container {
+    position: fixed;
+    top: calc(50% - 60px); /* 60px above the center line */
+    left: 0;
+    width: 100%;
+    z-index: 3;
+    overflow: hidden;
+    height: 60px;
+    opacity: 0;
+  }
+
+  .content {
+    position: absolute; /* changed from fixed to absolute */
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 5%;
+    opacity: 0;
+    transform: translateY(100%);
+  }
+
+  .content.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .description {
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .number {
+    font-size: 48px;
+    font-weight: bold;
+  }
+</style>
+
+<div class="container">
+  <div class="text-container">
+    <!-- Text content moved here -->
+    <div class="content" data-index="0">
+      <div class="description">Beautiful Mountain Landscape</div>
+      <div class="number">01</div>
+    </div>
+    <div class="content" data-index="1">
+      <div class="description">Serene Ocean View</div>
+      <div class="number">02</div>
+    </div>
+    <div class="content" data-index="2">
+      <div class="description">Forest Wilderness</div>
+      <div class="number">03</div>
+    </div>
+  </div>
+
+  <div class="center-line"></div>
+
+  <div class="image-container">
+    <section class="image-section">
+      <div class="image-wrapper">
+        <img src="https://picsum.photos/800/500?random=1" alt="Nature 1" />
+      </div>
+    </section>
+
+    <section class="image-section">
+      <div class="image-wrapper">
+        <img src="https://picsum.photos/800/500?random=2" alt="Nature 2" />
+      </div>
+    </section>
+
+    <section class="image-section">
+      <div class="image-wrapper">
+        <img src="https://picsum.photos/800/500?random=3" alt="Nature 3" />
+      </div>
+    </section>
+  </div>
+  <!--</div>-->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    const container = document.querySelector(".container");
+    const sectionCount = document.querySelectorAll(".image-section").length;
+    container.style.height = `${sectionCount * 100}vh`;
+
+    gsap.set(".center-line", { opacity: 0 });
+    gsap.set(".text-container", { opacity: 0 });
+
+    // Main ScrollTrigger for line and text container visibility
+    ScrollTrigger.create({
+      trigger: ".image-section",
+      start: "top 60%",
+      endTrigger: ".image-section:last-child",
+      end: "bottom 40%",
+      toggleActions: "play reverse play reverse",
+      onEnter: () => {
+        gsap.to([".center-line", ".text-container"], {
+          opacity: 1,
+          duration: 0.3,
+          ease: "power2.inOut",
+        });
+      },
+      onLeave: () => {
+        gsap.to([".center-line", ".text-container"], {
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.inOut",
+        });
+      },
+      onEnterBack: () => {
+        gsap.to([".center-line", ".text-container"], {
+          opacity: 1,
+          duration: 0.3,
+          ease: "power2.inOut",
+        });
+      },
+      onLeaveBack: () => {
+        gsap.to([".center-line", ".text-container"], {
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.inOut",
+        });
+      },
+    });
+
+    const sections = gsap.utils.toArray(".image-section");
+    const contents = gsap.utils.toArray(".content");
+
+    // Initial state for contents
+    gsap.set(contents, {
+      opacity: 0,
+      y: 100,
+    });
+
+    // Show first content on load
+    gsap.to(contents[0], {
+      opacity: 1,
+      y: 0,
+      duration: 0.4,
+    });
+
+    // Create ScrollTrigger for each section
+    sections.forEach((section, i) => {
+      const img = section.querySelector(".image-wrapper");
+
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top 60%",
+        end: "bottom 40%",
+        toggleActions: "play reverse play reverse",
+        onEnter: () => {
+          // Image animation
+          gsap.fromTo(
+            img,
+            { scale: 0.8 },
+            { scale: 1, duration: 0.75, ease: "power2.out" }
+          );
+
+          // Text animation
+          gsap.to(contents, {
+            opacity: 0,
+            y: "-100%",
+            duration: 0.3,
+            ease: "power2.inOut",
+          });
+
+          gsap.to(contents[i], {
+            opacity: 1,
+            y: "0%",
+            duration: 0.3,
+            delay: 0.1,
+            ease: "power2.out",
+          });
+        },
+        onEnterBack: () => {
+          // Image animation
+          gsap.to(img, {
+            scale: 1,
+            duration: 0.75,
+            ease: "power2.out",
+          });
+
+          // Text animation
+          gsap.to(contents, {
+            opacity: 0,
+            y: "100%",
+            duration: 0.3,
+            ease: "power2.inOut",
+          });
+
+          gsap.to(contents[i], {
+            opacity: 1,
+            y: "0%",
+            duration: 0.3,
+            delay: 0.1,
+            ease: "power2.out",
+          });
+        },
+        onLeave: () => {
+          gsap.to(img, {
+            scale: 0.8,
+            duration: 0.75,
+            ease: "power2.in",
+          });
+        },
+        onLeaveBack: () => {
+          gsap.to(img, {
+            scale: 0.8,
+            duration: 0.75,
+            ease: "power2.in",
+          });
+        },
+      });
+
+      // Parallax effect
+      gsap.to(img, {
+        yPercent: 15,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 0.5,
+        },
+      });
+    });
+
+    // Smooth scrolling
+    gsap.to(".image-container", {
+      y: 0,
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".container",
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 0.5,
+      },
+    });
+  </script>
+</div>
