@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Scroll Animation</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="wrapper-section"></div>
+    <div class="container">
+      <div class="text-container">
+        <!-- Text content moved here -->
+        <div class="content" data-index="0">
+          <div class="description">Beautiful Mountain Landscape</div>
+          <div class="number">01</div>
+        </div>
+        <div class="content" data-index="1">
+          <div class="description">Serene Ocean View</div>
+          <div class="number">02</div>
+        </div>
+        <div class="content" data-index="2">
+          <div class="description">Forest Wilderness</div>
+          <div class="number">03</div>
+        </div>
+      </div>
+
+      <div class="center-line"></div>
+
+      <div class="image-container">
+        <section class="image-section">
+          <div class="image-wrapper">
+            <img src="https://picsum.photos/800/500?random=1" alt="Nature 1" />
+          </div>
+        </section>
+
+        <section class="image-section">
+          <div class="image-wrapper">
+            <img src="https://picsum.photos/800/500?random=2" alt="Nature 2" />
+          </div>
+        </section>
+
+        <section class="image-section">
+          <div class="image-wrapper">
+            <img src="https://picsum.photos/800/500?random=3" alt="Nature 3" />
+          </div>
+        </section>
+      </div>
+    </div>
+    <div class="wrapper-section"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
